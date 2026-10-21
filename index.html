@@ -175,6 +175,11 @@ body.capture section.tab{padding-top:10px}
 .exit-capture{display:none;position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:12px;z-index:30}
 body.capture .exit-capture{display:inline-block}
 [data-mode="public"] .admin-only{display:none!important}
+.mode{display:inline-block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;padding:1px 7px;border-radius:5px;margin-right:6px;background:var(--lane-soft);color:var(--ink);vertical-align:1px}
+.mode.h{background:var(--turf-soft);color:var(--turf)}
+.mode.a{background:var(--bg);border:1px solid var(--line)}
+.ex-list .d{display:block;font-size:13px;color:var(--muted);font-weight:400;margin-top:2px}
+.ed-desc{grid-column:2/-1;font-size:13px;color:var(--muted);margin:-2px 0 6px}
 /* Pesos */
 .w-board{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .w-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
@@ -317,6 +322,53 @@ const CATALOG = [
   {n:"Puente a una pierna con pie en silla",c:"gluteo",l:3,hi:false,av:[]},
 ];
 const CAT_NAMES={cardio:"Cardio",piernas:"Piernas",empuje:"Tren superior",core:"Abdomen",gluteo:"Glúteo"};
+const MODE_TXT={r:"Repeticiones",h:"Estático",a:"Alternando"};
+const DESC={
+"Rodillas altas sin salto (rápido)":["r","Sube las rodillas a la altura de la cadera alternando, lo más rápido que puedas sin saltar."],
+"Jumping jack sin salto (paso lateral rápido)":["r","Paso a un lado subiendo los brazos, regresa y cambia de lado, sin parar."],
+"Boxeo de sombra rápido":["r","Golpes rápidos al aire alternando brazos, con las rodillas un poco flexionadas."],
+"Escaladores (mountain climbers)":["r","En plancha con brazos estirados, lleva una rodilla al pecho y alterna sin parar."],
+"Burpees sin salto":["r","Agáchate, lleva los pies atrás uno por uno hasta plancha, regresa igual y ponte de pie."],
+"Jumping jacks":["r","Salta abriendo piernas y subiendo brazos, cierra y repite sin parar."],
+"Rodillas altas corriendo":["r","Corre en tu lugar subiendo las rodillas a la altura de la cadera."],
+"Escaladores rápidos":["r","Igual que escaladores, pero a máxima velocidad."],
+"Saltos de patinador":["a","Salta de lado a lado cayendo en una pierna, como patinador."],
+"Burpees":["r","Agáchate, salta con los pies atrás a plancha, regresa y salta hacia arriba."],
+"Burpees con lagartija":["r","Burpee completo agregando una lagartija cuando estás en el piso."],
+"Tijeras con salto (split jacks)":["r","Salta alternando una pierna adelante y otra atrás en cada salto."],
+"Sentadillas":["r","Baja como si te sentaras y sube. Espalda recta y peso en los talones."],
+"Sentadilla isométrica en pared":["h","Espalda pegada a la pared y rodillas a 90°, como sentado en una silla invisible. Aguanta todo el tiempo."],
+"Zancada atrás alterna":["a","Da un paso atrás bajando la rodilla casi al piso, regresa y cambia de pierna."],
+"Sentadilla sumo":["r","Piernas muy abiertas y puntas hacia afuera; baja y sube."],
+"Sentadilla con pausa abajo":["r","Baja, aguanta 2 segundos abajo y sube."],
+"Zancada búlgara (pie atrás en silla)":["r","Pie de atrás apoyado en una silla; baja y sube. Cambia de pierna a la mitad del tiempo."],
+"Sentadilla con salto":["r","Baja en sentadilla y salta hacia arriba; cae suave y repite."],
+"Zancada con salto alterna":["a","Desde una zancada, salta y cambia de pierna en el aire."],
+"Sentadilla con salto y giro 180°":["r","Sentadilla y salto girando media vuelta; alterna el lado del giro."],
+"Lagartijas hincadas":["r","Rodillas en el piso y cuerpo recto; baja el pecho y sube."],
+"Superman (espalda)":["h","Boca abajo, levanta brazos, pecho y piernas del piso y aguanta."],
+"Lagartijas":["r","Cuerpo recto de cabeza a talones; baja el pecho casi al piso y sube."],
+"Fondos en silla (tríceps)":["r","Manos en la orilla de una silla a tu espalda; baja doblando los codos y sube."],
+"Nadador en el piso (superman alterno)":["a","Boca abajo, levanta brazo y pierna contrarios, alternando sin parar."],
+"Lagartijas con pausa abajo":["r","Baja, aguanta 2 segundos cerca del piso y sube."],
+"Lagartijas diamante":["r","Manos juntas formando un diamante debajo del pecho; baja y sube."],
+"Lagartijas declinadas (pies en silla)":["r","Pies arriba en una silla y manos en el piso; baja y sube."],
+"Plancha":["h","Apoyado en antebrazos y puntas de pies, cuerpo recto. Aguanta sin moverte."],
+"Bicho muerto (dead bug)":["a","Boca arriba con brazos y rodillas arriba; estira brazo y pierna contrarios y alterna."],
+"Abdominal bicicleta":["a","Boca arriba, lleva el codo a la rodilla contraria, alternando como pedaleando."],
+"Elevación de piernas acostado":["r","Boca arriba, sube las piernas rectas y bájalas sin tocar el piso."],
+"Plancha lateral (alternando)":["h","De lado sobre un antebrazo, cadera arriba. Aguanta y cambia de lado a la mitad del tiempo."],
+"Barquito (hollow hold)":["h","Boca arriba, levanta hombros y piernas del piso con la espalda baja pegada. Aguanta."],
+"Plancha con toques de hombro":["a","En plancha con brazos estirados, toca el hombro contrario con cada mano, alternando."],
+"Abdominal en V (V-ups)":["r","Acostado, sube brazos y piernas al mismo tiempo hasta tocarte y baja."],
+"Puente de glúteo con pausa":["r","Boca arriba con rodillas dobladas; sube la cadera, aguanta 2 segundos arriba y baja."],
+"Patada de glúteo en cuatro puntos":["r","En cuatro puntos, patea hacia atrás y arriba. Cambia de pierna a la mitad del tiempo."],
+"Puente a una pierna (alternando)":["a","Sube la cadera con una pierna estirada en el aire; cambia de pierna en cada repetición."],
+"Zancada lateral alterna":["a","Paso amplio a un lado bajando la cadera, regresa y cambia de lado."],
+"Puente a una pierna con pie en silla":["r","Talón en una silla, sube y baja la cadera con una pierna. Cambia de pierna a la mitad del tiempo."],
+};
+function exInfo(n){return DESC[n]||["r","Haz todas las repeticiones que puedas durante el tiempo, con buena técnica."]}
+function exDescHTML(n){const[m,d]=exInfo(n);return `<span class="mode ${m}">${MODE_TXT[m]}</span>${esc(d)}`}
 const SLOTS={
   bajar:   ["cardio","piernas","empuje","cardio","core","gluteo","cardio","piernas","core","empuje"],
   mantener:["cardio","piernas","empuje","core","cardio","gluteo","piernas","core","empuje","cardio"],
@@ -495,7 +547,7 @@ function renderParticipantes(){
     return `<button class="p-item" data-action="select" data-id="${p.id}" aria-current="${p.id===ui.selected}">
       <span class="av">${esc(initials(p.name))}</span><span><span class="nm">${esc(p.name)}</span><br><span class="sub">${esc(sub)}</span></span></button>`}).join("");
   el.innerHTML=`
-  <div class="sec-head"><h2>Participantes</h2><p>Agrega a cada persona y da clic en su nombre para ver su circuito del día.</p></div>
+  <div class="sec-head"><h2>Participantes</h2><p>${PUBLIC?"Da clic en tu nombre para ver tu circuito del día y tu plan por semanas.":"Agrega a cada persona y da clic en su nombre para ver su circuito del día."}</p></div>
   <div class="p-layout">
     <div>
       <form class="add-row admin-only" data-form="add"><input type="text" id="new-name" placeholder="Nombre del participante" aria-label="Nombre del participante" maxlength="40"><button class="btn lane">Agregar</button></form>
@@ -520,7 +572,7 @@ function renderDetail(){
   else status=`${fmtDate(t)} · Semana ${w} de ${S.config.weeks}`;
   const viewWeek=w<1?1:w>S.config.weeks?S.config.weeks:(isSunday(t)?Math.min(w+1,S.config.weeks):w);
   const b=blockOf(viewWeek),cur=planAt(p.plan,b);
-  const exList=p.plan.exercises.map(n=>`<li><span class="t">${esc(n)}</span><span class="s">${cur.work} s · descanso ${cur.rest} s</span>${ytLink(n)}</li>`).join("");
+  const exList=p.plan.exercises.map(n=>`<li><span class="t">${esc(n)}<span class="d">${exDescHTML(n)}</span></span><span class="s">${cur.work} s · descanso ${cur.rest} s</span>${ytLink(n)}</li>`).join("");
   const blocks=Math.ceil(S.config.weeks/2);
   let rows="";for(let i=1;i<=blocks;i++){const q=planAt(p.plan,i);rows+=`<tr class="${i===b?"cur":""}"><td>${blockLabel(i)}</td><td class="n">${q.work}/${q.rest} s</td><td class="n">${q.rounds}</td><td class="n">${mins(q.secs)} min</td><td class="n">${q.cardio} min</td></tr>`}
   const wk=Math.max(1,Math.min(w,S.config.weeks));
@@ -618,7 +670,7 @@ function renderEditor(){
       <button type="button" class="icon-btn" data-action="ex-video" data-i="${i}" aria-label="Cambiar video" title="Pegar otro enlace de video">✎</button>
       <button type="button" class="icon-btn" data-action="ex-up" data-i="${i}" aria-label="Subir">↑</button>
       <button type="button" class="icon-btn" data-action="ex-down" data-i="${i}" aria-label="Bajar">↓</button>
-      <button type="button" class="icon-btn" data-action="ex-del" data-i="${i}" aria-label="Quitar">✕</button></span></div>`}).join("");
+      <button type="button" class="icon-btn" data-action="ex-del" data-i="${i}" aria-label="Quitar">✕</button></span>${n.trim()?`<div class="ed-desc">${exDescHTML(n)}</div>`:""}</div>`}).join("");
   const num=(k,label,min,max)=>`<div><label class="f" for="pl-${k}">${label}</label><input type="number" id="pl-${k}" data-pl="${k}" min="${min}" max="${max}" value="${pl[k]}"></div>`;
   return `<h3 style="font-size:28px;margin-bottom:10px">Propuesta para ${esc(p?p.name:"")}</h3>${warn}${why}
     <div class="row" style="margin-bottom:12px"><label class="f" for="pl-level" style="margin:0">Nivel</label>
@@ -707,10 +759,10 @@ function renderRanking(animate=true){
     return `<tr><td class="n pos">${pos}</td><td><b>${esc(r.p.name)}</b></td><td class="n">${r.wp} / 12</td><td class="n">${r.full}</td><td class="n">${r.pts}</td><td class="n">${Math.round(r.prog*100)}%</td></tr>`}).join("");
   const wOpts=Array.from({length:c.weeks},(_,i)=>`<option value="${i+1}" ${rw===i+1?"selected":""}>Semana ${i+1}</option>`).join("");
   const dl=daysLeft();
-  el.innerHTML=`<div class="sec-head no-capture"><h2>Ranking</h2><p>Toma captura del tablero para mandarlo al grupo.</p>
+  el.innerHTML=`<div class="sec-head no-capture"><h2>Ranking</h2><p class="admin-only">Toma captura del tablero para mandarlo al grupo.</p>
       <div class="row" style="margin-left:auto"><select id="rank-week" style="width:auto" aria-label="Semana del ranking">${wOpts}</select>
-      <button class="btn ghost sm" data-action="replay">Repetir animación</button><button class="btn lane sm" data-action="capture">Modo captura</button></div></div>
-    ${!rows.length?`<div class="empty">Agrega participantes para ver el ranking.</div>`:`
+      <button class="btn ghost sm" data-action="replay">Repetir animación</button><button class="btn lane sm admin-only" data-action="capture">Modo captura</button></div></div>
+    ${!rows.length?`<div id="ranking-board"><div class="prize"><div class="trophy" aria-hidden="true">🏆</div><div><h3>${esc(c.prize)}</h3><p>Gana quien más se acerque a la meta de ${c.prizeGoal} días completos (video + cardio el mismo día).</p></div><div class="left"><b>${dl}</b>${dl===1?"día":"días"} de reto restantes</div></div><div class="board-foot">${PUBLIC?"Aún no hay participantes registrados.":"Agrega participantes para ver el ranking."}</div></div>`:`
     <div id="ranking-board">
       <div class="prize"><div class="trophy" aria-hidden="true">🏆</div>
         <div><h3>${esc(c.prize)}</h3><p>Gana quien más se acerque a la meta de ${c.prizeGoal} días completos (video + cardio el mismo día). Desempate: puntos totales.</p></div>
@@ -721,7 +773,7 @@ function renderRanking(animate=true){
       <div class="rank-table tscroll"><table><thead><tr><th class="n">Lugar</th><th>Participante</th><th class="n">Puntos sem. ${rw}</th><th class="n">Días completos</th><th class="n">Puntos totales</th><th class="n">Avance</th></tr></thead><tbody>${table}</tbody></table></div>
       <div class="board-foot">1 punto por video del circuito y 1 por cardio, de lunes a sábado (máximo 12 por semana). Actualizado ${esc(fmtDate(today()))}.</div>
     </div>`}
-    <p class="no-capture hint" style="margin-top:10px">En modo captura se ocultan el menú y los botones. Presiona Esc para salir.</p>`;
+    <p class="no-capture hint admin-only" style="margin-top:10px">En modo captura se ocultan el menú y los botones. Presiona Esc para salir.</p>`;
   animateTrack(animate);
   const sel=$("#rank-week");if(sel)sel.addEventListener("change",e=>{ui.rankWeek=+e.target.value;renderRanking(false)});
 }
@@ -749,13 +801,13 @@ function wcPct(c){const s=c.pct>0?"+":"";return `${s}${c.pct.toFixed(1)}%`}
 function wcText(p){const c=wChange(p);if(!c)return '<span class="muted">—</span>';if(c.kg===null)return wcPct(c);const s=c.kg>0?"+":"";return `${s}${c.kg.toFixed(1)} kg · ${wcPct(c)}`}
 function renderPesos(){
   const el=$("#tab-pesos");const ps=S.participants.slice().sort((a,b)=>a.name.localeCompare(b.name,"es"));
-  if(!ps.length){el.innerHTML=`<div class="sec-head"><h2>Pesos</h2></div><div class="empty">Agrega participantes primero.</div>`;return}
+  if(!ps.length){el.innerHTML=`<div class="sec-head"><h2>Pesos</h2></div><div class="empty">${PUBLIC?"Aún no hay participantes.":"Agrega participantes primero."}</div>`;return}
   const rows=ps.map(p=>`<tr><td><b>${esc(p.name)}</b></td><td>${esc(META_TXT[metaOf(p)]||"Sin meta (crea su plan)")}</td>
     <td class="n"><input type="number" step="0.1" min="30" max="300" data-w="pesoIni" data-id="${p.id}" value="${p.pesoIni??""}" style="width:100px" aria-label="Peso inicial de ${esc(p.name)}"></td>
     <td class="n"><input type="number" step="0.1" min="30" max="300" data-w="pesoFin" data-id="${p.id}" value="${p.pesoFin??""}" style="width:100px" aria-label="Peso final de ${esc(p.name)}"></td>
     <td class="n" data-wc="${p.id}">${wcText(p)}</td></tr>`).join("");
-  el.innerHTML=`<div class="sec-head no-capture"><h2>Pesos</h2><p>Peso inicial y final en kg. Cada quien compite contra los de su misma meta, en porcentaje.</p>
-      <button class="btn lane sm" data-action="capture" style="margin-left:auto">Modo captura</button></div>
+  el.innerHTML=`<div class="sec-head no-capture"><h2>Pesos</h2><p>${PUBLIC?"Cada quien compite contra los de su misma meta, en porcentaje de su peso inicial.":"Peso inicial y final en kg. Cada quien compite contra los de su misma meta, en porcentaje."}</p>
+      <button class="btn lane sm admin-only" data-action="capture" style="margin-left:auto">Modo captura</button></div>
     <div class="panel no-capture admin-only" style="margin-bottom:18px"><div class="tscroll"><table><thead><tr><th>Participante</th><th>Meta</th><th class="n">Peso inicial (kg)</th><th class="n">Peso final (kg)</th><th class="n">Cambio</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p class="hint">Se compara en porcentaje para que sea justo entre personas de distinto peso. La meta se toma del plan de cada persona.</p></div>
     <div id="w-board">${renderWBoard()}</div>`;
@@ -778,7 +830,7 @@ function renderWBoard(){
 /* ======================= Render: Reglas ======================= */
 function renderReglas(){
   const c=S.config;
-  $("#tab-reglas").innerHTML=`<div class="sec-head"><h2>Reglas del reto</h2><p>Puedes tomar captura y mandarla al grupo.</p></div>
+  $("#tab-reglas").innerHTML=`<div class="sec-head"><h2>Reglas del reto</h2><p class="admin-only">Puedes tomar captura y mandarla al grupo.</p></div>
   <div class="panel rules">
     <p><b>Del ${esc(fmtDate(c.start))} al ${esc(fmtDate(addDays(endDate(),-1)))}.</b> Lunes a sábado. El domingo es de descanso.</p>
     <h3>Cada día hay que hacer dos cosas</h3>
@@ -787,6 +839,11 @@ function renderReglas(){
     <h3>Evidencia, el mismo día antes de las 11:59 p.m.</h3>
     <ul><li>🎥 <b>Video del circuito.</b> Puede ir en cámara rápida para que pese poco, pero debe verse el circuito completo.</li>
     <li>📱 <b>Captura del cardio</b> de tu app de actividad, con fecha y minutos. Si vas al gym, foto de la pantalla de la máquina con el tiempo.</li></ul>
+    <h3>Cómo leer tu circuito</h3>
+    <ul><li><span class="mode r">Repeticiones</span> haz todas las que puedas durante el tiempo, con buena técnica.</li>
+    <li><span class="mode h">Estático</span> mantén la posición sin moverte todo el tiempo.</li>
+    <li><span class="mode a">Alternando</span> haz repeticiones cambiando de lado o de pierna.</li>
+    <li>Cuando un ejercicio dice “cambia de pierna a la mitad del tiempo”, haz la mitad con cada lado.</li></ul>
     <h3>Puntos y premio</h3>
     <ul><li>1 punto por el video y 1 por el cardio. Si mandas los dos, es un <b>día completo</b>.</li>
     <li>Premio: <b>${esc(c.prize)}</b>. Lo gana quien más se acerque a la meta de <b>${c.prizeGoal} días completos</b>. Si hay empate, gana quien tenga más puntos totales.</li>
@@ -835,7 +892,7 @@ function showTab(t){
 let toastT;function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("on"),2200)}
 function shareText(p,b){
   const q=planAt(p.plan,b);
-  return `💪 Reto de Salud · ${p.name}\n${blockLabel(b)} · lunes a sábado (domingo descanso)\n\n🔁 CIRCUITO: ${q.rounds} rondas\nCada ejercicio ${q.work} s, descanso ${q.rest} s y sigues con el siguiente:\n${p.plan.exercises.map((n,i)=>`${i+1}. ${n}\n   ▶ ${videoUrl(n)}`).join("\n")}\nDescanso entre rondas: ${q.roundRest} s · Duración aprox: ${mins(q.secs)} min\n\n🏃 CARDIO: ${q.cardio} min diarios · ${p.plan.cardioType}\n\n📲 Evidencia diaria antes de las 11:59 p.m.:\n🎥 Video del circuito\n📱 Captura de tu app de cardio${p.plan.cardioPlace==="gym"?" (o foto de la máquina con el tiempo)":""}`;
+  return `💪 Reto de Salud · ${p.name}\n${blockLabel(b)} · lunes a sábado (domingo descanso)\n\n🔁 CIRCUITO: ${q.rounds} rondas\nCada ejercicio ${q.work} s, descanso ${q.rest} s y sigues con el siguiente:\n${p.plan.exercises.map((n,i)=>{const[m,d]=exInfo(n);return `${i+1}. ${n} (${MODE_TXT[m]})\n   ${d}\n   ▶ ${videoUrl(n)}`}).join("\n")}\nDescanso entre rondas: ${q.roundRest} s · Duración aprox: ${mins(q.secs)} min\n\n🏃 CARDIO: ${q.cardio} min diarios · ${p.plan.cardioType}\n\n📲 Evidencia diaria antes de las 11:59 p.m.:\n🎥 Video del circuito\n📱 Captura de tu app de cardio${p.plan.cardioPlace==="gym"?" (o foto de la máquina con el tiempo)":""}`;
 }
 async function download(filename,data,type){
   try{const dl=window.claude&&window.claude.use?await window.claude.use("downloads"):null;
